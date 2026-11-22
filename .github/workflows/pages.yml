@@ -31,7 +31,7 @@ jobs:
           python-version: '3.13'
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '26'
           cache: npm
       - name: Build static preview
         run: python3 scripts/build_pages.py

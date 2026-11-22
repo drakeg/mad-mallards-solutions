@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    ports:
+      - "${MMS_PORT:-8097}:8097"
+    environment:
+      MMS_HOST: 0.0.0.0
+      MMS_PORT: "8097"
+      MMS_DATABASE: /app/data/leads.sqlite3
+    volumes:
+      - madmallards_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8097/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  madmallards_data:

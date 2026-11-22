@@ -21,7 +21,7 @@
 - One peak: the visitor switches a challenge and sees messy work reframe as an actionable, clearer system. "It's the site where the pain turns into the plan."
 - Signature move: three-state before/after business friction explorer, functional without requiring scroll.
 - Aesthetic family: premium minimal, muted green and warm paper, tactile geometric self-authored brand symbol.
-- Structure: chaptered scenes. Editorial presentation using flow and one restrained pinned statement, as the user wanted scenes rather than a continuous cinematic film.
+- Structure: chaptered scenes. Editorial presentation using flow and a restrained high-contrast statement, as the user wanted scenes rather than a continuous cinematic film.
 - Assets: original SVG and CSS geometry; no paid imagery, unlicensed stock or fabricated testimonials.
 - CTA: contact as main commercial action; blog and subscribe as requested secondary paths.
 - Authored quiet: journal and subscribe sections are intentionally reduced in motion.
@@ -30,7 +30,7 @@
 | Beat | Device family | Intended feeling |
 |---|---|---|
 | Recognition | layered hero / restrained parallax | immediate calm |
-| Belief | pinned headline progression | conviction |
+| Belief | editorial hard-cut statement + entrance reveal | conviction |
 | Range | flow + entrance reveals | possibility |
 | Transformation | functional interactive comparison | agency (peak) |
 | Method | high-contrast chapter transition + scroll reveals | reassurance |

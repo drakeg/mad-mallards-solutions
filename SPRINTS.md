@@ -20,6 +20,7 @@
 - [ ] Add SEO schema, sitemap, canonical and search indexing checks
 - [ ] Add privacy-safe visitor analytics after consent policy review
 ## Sprint 3 — Commercial experience
+- [x] Refine editorial grammar: hard-cut belief scene and non-card service list
 - [ ] Implement consultation intake and scheduling workflow
 - [ ] Add genuine case studies, proof points and customer outcomes
 - [ ] Add a manageable blog publishing process and content calendar

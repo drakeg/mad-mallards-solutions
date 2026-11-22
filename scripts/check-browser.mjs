@@ -1,6 +1,8 @@
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
-const browser = await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',args:['--disable-features=PointerLock,MouseCapture']});
+fs.mkdirSync('screenshots',{recursive:true});
+const chromePath='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const browser = await chromium.launch({headless:true,executablePath:process.env.SCROLLCRAFT_CHROME || (fs.existsSync(chromePath)?chromePath:chromium.executablePath()),args:['--disable-features=PointerLock,MouseCapture']});
 let failures=0;
 for (const mode of [{name:'desktop',width:1440,height:900},{name:'mobile',width:390,height:844},{name:'reduced',width:390,height:844,reducedMotion:'reduce'}]) {
  const context=await browser.newContext({viewport:{width:mode.width,height:mode.height},reducedMotion:mode.reducedMotion??'no-preference',serviceWorkers:'block'});
@@ -8,7 +10,7 @@ for (const mode of [{name:'desktop',width:1440,height:900},{name:'mobile',width:
  const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
- await page.goto('http://127.0.0.1:8097/',{waitUntil:'networkidle'});
+ await page.goto((process.env.MMS_BASE_URL || 'http://127.0.0.1:8099') + '/',{waitUntil:'networkidle'});
  await page.screenshot({path:'screenshots/'+mode.name+'-top.png'});
  const sizes=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,scrollHeight:document.documentElement.scrollHeight,heroVisible:document.querySelector('h1').getBoundingClientRect().width>100,actCount:document.querySelectorAll('[data-sc-act]').length}));
  await page.locator('[data-case="2"]').click();
@@ -32,7 +34,7 @@ for (const mode of [{name:'desktop',width:1440,height:900},{name:'mobile',width:
  await context.close();
 }
 const page=await browser.newPage();
-await page.goto('http://127.0.0.1:8097/');
+await page.goto((process.env.MMS_BASE_URL || 'http://127.0.0.1:8099') + '/');
 await page.locator('#name').fill('Browser Tester');
 await page.locator('#email').fill('browser-test@example.invalid');
 await page.locator('#message').fill('A browser test enquiry regarding site consulting services.');

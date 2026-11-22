@@ -1,0 +1,67 @@
+name: Deploy temporary GitHub Pages preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'scripts/build_pages.py'
+      - 'scripts/check-pages.mjs'
+      - 'tests/test_pages.py'
+      - '.github/workflows/pages.yml'
+      - 'package*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Build static preview
+        run: python3 scripts/build_pages.py
+      - name: Verify safe static output and links
+        run: python3 -m unittest discover -s tests -p test_pages.py -v
+      - name: Browser smoke test
+        run: |
+          npm ci
+          npx playwright-core install --with-deps chromium
+          mkdir -p "${{ runner.temp }}/pages-preview/mad-mallards-solutions"
+          cp -a dist/. "${{ runner.temp }}/pages-preview/mad-mallards-solutions/"
+          python3 -m http.server 8127 --bind 127.0.0.1 --directory "${{ runner.temp }}/pages-preview" &
+          PID=$!
+          trap 'kill "$PID" || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8127/mad-mallards-solutions/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/check-pages.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

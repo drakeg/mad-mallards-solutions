@@ -10,3 +10,6 @@
 - P2: Add contact lead management or CRM integration
 - P2: Add editorial CMS without introducing ongoing cost
 - P3: Schedule regular Scroll Craft engine updates and regression checks
+
+- P1: Verify publicly served Pages routes and mobile layout after deployment.
+- P1: Replace preview placeholders with securely hosted forms when backend is available.

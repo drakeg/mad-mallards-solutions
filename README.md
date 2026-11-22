@@ -105,3 +105,29 @@ are committed to SQLite before attempting email; if SMTP fails, the inquiry is
 still saved and only a generic notification failure is logged. Credentials and
 recipient data should be reviewed before enabling this on a production site.
 Newsletter sending remains disabled, pending an explicit opt-in workflow.
+
+## Temporary GitHub Pages preview
+
+Static public preview: [Mad Mallards Solutions on GitHub Pages](https://drakeg.github.io/mad-mallards-solutions/).
+The `Deploy temporary GitHub Pages preview` GitHub Actions workflow builds and deploys
+the `site/` frontend to a separately generated `dist/` artifact when `main`
+changes. The local Python/Docker deployment is **independent and unchanged**.
+
+**Important:** GitHub Pages cannot execute Python, SQLite, or SMTP. The Pages
+build removes the contact and newsletter forms and replaces them with honest
+explanations; no personal information is collected by this temporary preview.
+Scroll scenes, the interactive comparison, blog and navigation work normally.
+The temporary preview uses `noindex,nofollow` to avoid competing with a future
+production site in search results.
+
+Build and inspect locally with:
+
+```bash
+python3 scripts/build_pages.py
+python3 -m unittest discover -s tests -p test_pages.py -v
+```
+
+To test actual browser routing under the Pages project path, run a local HTTP
+server with the generated `dist/` directory served as
+`/mad-mallards-solutions/`, then `npm run test:pages`.
+The deployment workflow runs that test automatically before publishing.

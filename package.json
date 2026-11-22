@@ -8,6 +8,7 @@
   "description": "Local browser verification tools for the Mad Mallards Solutions site",
   "scripts": {
     "test:browser": "node scripts/check-browser.mjs",
-    "test:a11y": "node scripts/check-accessibility.mjs"
+    "test:a11y": "node scripts/check-accessibility.mjs",
+    "test:pages": "node scripts/check-pages.mjs"
   }
 }

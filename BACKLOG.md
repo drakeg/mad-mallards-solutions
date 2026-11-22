@@ -3,7 +3,7 @@
 - P0: Validate form safeguards, GDPR/CAN-SPAM consent language and deletion request procedures prior to production
 - P1: Add double opt-in, unsubscribe mechanism and outbound mail integration (requires provider setup)
 - P1: Configure domain and secure hosting with persistent backups
-- P1: Implement automated browser functional and accessibility regression tests
+- DONE: Implement automated browser functional and accessibility regression tests
 - P1: Add SEO metadata, sitemap, robots.txt and structured business details
 - P2: Build genuine portfolio and consulting case studies once approved
 - P2: Add contact lead management or CRM integration

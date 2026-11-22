@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "${MMS_PORT:-8097}:8097"
+      - "${MMS_PORT:-8099}:8097"
     environment:
       MMS_HOST: 0.0.0.0
       MMS_PORT: "8097"

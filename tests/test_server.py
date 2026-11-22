@@ -37,6 +37,13 @@ class SiteTests(unittest.TestCase):
  def test_bad_email(self):
   with self.assertRaises(urllib.error.HTTPError) as err:self.post('/api/subscribe',{'email':'invalid'})
   self.assertEqual(err.exception.code,400)
+ def test_operator_cli(self):
+  env={**os.environ,'MMS_DATABASE':str(self.db)}
+  result=subprocess.check_output([sys.executable,str(ROOT/'scripts'/'manage_leads.py'),'summary'],env=env,text=True)
+  self.assertIn('Contacts:',result)
+  self.assertIn('Subscribers pending:',result)
+  from scripts.manage_leads import safe_cell
+  self.assertEqual(safe_cell('=SUM(1,1)'),"'=SUM(1,1)")
  def test_unknown_page(self):
   with self.assertRaises(urllib.error.HTTPError) as err:self.get('/invalid-page-123.html')
   self.assertEqual(err.exception.code,404)

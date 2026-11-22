@@ -7,6 +7,13 @@ services:
       MMS_HOST: 0.0.0.0
       MMS_PORT: "8097"
       MMS_DATABASE: /app/data/leads.sqlite3
+      MMS_SMTP_HOST: ${MMS_SMTP_HOST:-}
+      MMS_SMTP_PORT: ${MMS_SMTP_PORT:-587}
+      MMS_SMTP_SSL: ${MMS_SMTP_SSL:-false}
+      MMS_SMTP_USERNAME: ${MMS_SMTP_USERNAME:-}
+      MMS_SMTP_PASSWORD: ${MMS_SMTP_PASSWORD:-}
+      MMS_SMTP_FROM: ${MMS_SMTP_FROM:-}
+      MMS_CONTACT_TO: ${MMS_CONTACT_TO:-}
     volumes:
       - madmallards_data:/app/data
     restart: unless-stopped

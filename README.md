@@ -1,5 +1,10 @@
 # Mad Mallards Solutions
 
+[![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)](Dockerfile)
+[![JavaScript](https://img.shields.io/badge/JavaScript-444?logo=javascript)](site/app.js)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](compose.yml)
+[![SQLite](https://img.shields.io/badge/SQLite-persistent-003B57?logo=sqlite)](server.py)
+
 [![CI](https://github.com/drakeg/mad-mallards-solutions/actions/workflows/ci.yml/badge.svg)](https://github.com/drakeg/mad-mallards-solutions/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/drakeg/mad-mallards-solutions)](LICENSE)
 [![Issues](https://img.shields.io/github/issues/drakeg/mad-mallards-solutions)](https://github.com/drakeg/mad-mallards-solutions/issues)
@@ -18,14 +23,14 @@ From the repository root:
 
 ```bash
 python3 server.py
-# http://127.0.0.1:8097
+# http://127.0.0.1:8099
 ```
 
 Docker Compose is supported:
 
 ```bash
 docker compose up --build -d
-# http://localhost:8097
+# http://localhost:8099
 ```
 
 Change the host port using `MMS_PORT=8098 docker compose up --build -d`. Docker binds to the LAN by default, so use network access controls and **do not expose the prototype publicly**. SQLite data persists in the `madmallards_data` named volume.
@@ -53,3 +58,35 @@ The untouched `site/scrollcraft.js` and `site/scrollcraft.css` are copied from t
 
 ## Project process
 See [AGENTS.md](AGENTS.md), [SPRINTS.md](SPRINTS.md), [BACKLOG.md](BACKLOG.md), [CONTRIBUTING.md](CONTRIBUTING.md) and [RELEASES.md](RELEASES.md).
+
+## Browser and accessibility checks
+
+Run the local server, then:
+
+```bash
+npm ci
+npm run test:browser
+npm run test:a11y
+```
+
+The scripts use installed Chrome on macOS or Playwright Chromium on other platforms; override with `SCROLLCRAFT_CHROME`. GitHub CI installs the free Playwright Chromium runtime.
+
+## Viewing locally stored leads
+
+Only authorized operators with shell access can view or change submissions. The commands below run inside the persistent Docker container:
+
+```bash
+docker compose exec -T web python scripts/manage_leads.py summary
+docker compose exec -T web python scripts/manage_leads.py contacts
+docker compose exec -T web python scripts/manage_leads.py subscribers
+docker compose exec -T web python scripts/manage_leads.py export-contacts > contacts.csv
+docker compose exec -T web python scripts/manage_leads.py export-subscribers > subscribers.csv
+```
+
+CSV exports contain personal information and must not be committed, publicly shared, or left on a shared device. The exporter neutralizes spreadsheet formula injection. To unsubscribe a specific address:
+
+```bash
+docker compose exec -T web python scripts/manage_leads.py unsubscribe person@example.com --confirm
+```
+
+To delete specific records use `delete-contact <numeric-id> --confirm` or `delete-subscriber <numeric-id> --confirm`. Back up data before deletion. The system does not send email and does not mark a pending subscription as confirmed.

@@ -6,9 +6,13 @@
 - [x] Implement working contact and pending subscription storage
 - [x] Supply Docker Compose and persistent database
 - [x] Add CI and server integration tests
-- [ ] Complete real visual verification across scroll positions, device sizes, and reduced motion
-- [ ] Verify running Docker container and LAN accessibility where supported
+- [x] Complete desktop/mobile/reduced-motion headless browser verification across scroll positions
+- [x] Verify running Docker container, health check, and form submissions; LAN port 8099 (requires network allowlisting)
 ## Sprint 2 — Production readiness
+- [x] Resolve port conflict with Workbench3D by using 8099
+- [x] Fix automated WCAG 2.0/2.1 A/AA color-contrast failures
+- [x] Add repeatable browser and accessibility checks to CI
+- [x] Add local operator CLI for viewing, exporting and unsubscribing leads
 - [ ] Set up custom domain, TLS and chosen hosting
 - [ ] Add outbound contact notifications and a consent-based newsletter provider
 - [ ] Confirm company contact/legal details and review privacy/retention practices

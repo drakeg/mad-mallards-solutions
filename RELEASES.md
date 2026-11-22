@@ -16,3 +16,6 @@ No tagged release or production deployment has been published.
 
 ## Editorial polish
 - Replaced the pinned crossfade and repeated service-card grid with quieter editorial chapter and service treatments consistent with the selected Scroll Craft grammar.
+
+## Temporary hosting
+- Add static GitHub Pages preview, with safe non-collecting form placeholders and GitHub Actions deployment.

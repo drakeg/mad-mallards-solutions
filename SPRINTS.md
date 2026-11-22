@@ -24,3 +24,11 @@
 - [ ] Implement consultation intake and scheduling workflow
 - [ ] Add genuine case studies, proof points and customer outcomes
 - [ ] Add a manageable blog publishing process and content calendar
+
+## Sprint 4 — Temporary public preview
+- [x] Add static GitHub Pages build with correct project URL paths
+- [x] Disable backend-dependent contact and newsletter forms on Pages
+- [x] Keep local full-stack Docker environment unchanged
+- [x] Add GitHub Actions Pages workflow with static link and browser tests
+- [ ] Verify Pages deployment and public URL responds after workflow merge
+- [ ] Connect secure production backend and mailing workflow before public form activation

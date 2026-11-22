@@ -8,3 +8,6 @@ __pycache__/
 playwright-report/
 test-results/
 screenshots/
+
+# Generated static Pages preview
+dist/

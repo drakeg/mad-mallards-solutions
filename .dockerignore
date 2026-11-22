@@ -1,0 +1,11 @@
+.git
+.github
+.env
+node_modules
+screenshots
+tests
+data
+__pycache__
+*.pyc
+*.sqlite3
+.DS_Store

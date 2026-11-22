@@ -1,7 +1,8 @@
 # Backlog
 - P0: Fix defects from local/browser/CI testing
 - P0: Validate form safeguards, GDPR/CAN-SPAM consent language and deletion request procedures prior to production
-- P1: Add double opt-in, unsubscribe mechanism and outbound mail integration (requires provider setup)
+- P1: Configure an authorized SMTP destination; test actual delivery with consent
+- P1: Add double opt-in and unsubscribe workflow before sending newsletters
 - P1: Configure domain and secure hosting with persistent backups
 - DONE: Implement automated browser functional and accessibility regression tests
 - P1: Add SEO metadata, sitemap, robots.txt and structured business details

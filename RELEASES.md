@@ -10,3 +10,6 @@ No tagged release or production deployment has been published.
 - Resolved Workbench3D port conflict by selecting configurable port 8099.
 - Added Playwright browser and axe-core accessibility regression checks.
 - Corrected text color contrast failures and added privacy-conscious local lead management CLI.
+
+## Contact readiness
+- Optional STARTTLS/SMTPS contact email notifications after durable SQLite persistence; disabled without operator configuration.

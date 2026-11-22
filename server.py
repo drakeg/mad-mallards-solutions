@@ -1,6 +1,8 @@
 """Zero-dependency website and SQLite form receiver."""
-import json, os, re, sqlite3, time
+import json, os, re, sqlite3, ssl, smtplib, time
 from collections import defaultdict, deque
+from contextlib import closing
+from email.message import EmailMessage
 from email.parser import BytesParser
 from email.policy import default
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -22,6 +24,40 @@ def connection():
     c.execute("CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY,name TEXT NOT NULL,email TEXT NOT NULL,message TEXT NOT NULL,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)")
     c.execute("CREATE TABLE IF NOT EXISTS subscribers (id INTEGER PRIMARY KEY,email TEXT NOT NULL UNIQUE,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,status TEXT NOT NULL DEFAULT 'pending')")
     return c
+def notify_contact(name, email, message):
+    """Optionally notify the operator after an inquiry is durably saved.
+
+    Never send until explicit SMTP connection and destination settings exist.
+    Uses encrypted transport only and never puts a visitor address in From.
+    """
+    host = os.environ.get("MMS_SMTP_HOST", "").strip()
+    sender = os.environ.get("MMS_SMTP_FROM", "").strip()
+    recipient = os.environ.get("MMS_CONTACT_TO", "").strip()
+    if not (host and sender and recipient):
+        return False
+    mail = EmailMessage()
+    mail["Subject"] = "New Mad Mallards Solutions website inquiry"
+    mail["From"] = sender
+    mail["To"] = recipient
+    mail["Reply-To"] = email
+    mail.set_content("Name: {}\nEmail: {}\n\nMessage:\n{}".format(name, email, message))
+    settings = {"host": host, "port": int(os.environ.get("MMS_SMTP_PORT", "587")),
+                "timeout": 8, "context": ssl.create_default_context()}
+    if os.environ.get("MMS_SMTP_SSL", "").lower() in ("1", "true", "yes"):
+        client = smtplib.SMTP_SSL(**settings)
+    else:
+        settings.pop("context")
+        client = smtplib.SMTP(**settings)
+    with client as smtp:
+        if not isinstance(client, smtplib.SMTP_SSL):
+            smtp.starttls(context=ssl.create_default_context())
+        username = os.environ.get("MMS_SMTP_USERNAME", "")
+        password = os.environ.get("MMS_SMTP_PASSWORD", "")
+        if username and password:
+            smtp.login(username, password)
+        smtp.send_message(mail)
+    return True
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,directory=str(SITE),**kwargs)
@@ -88,18 +124,25 @@ class Handler(SimpleHTTPRequestHandler):
             email=field("email").lower()
             if len(email)>254 or not EMAIL.fullmatch(email):
                 return self.respond(400,{"error":"Enter a valid email."})
-            with connection() as c:
+            with closing(connection()) as c, c:
                 if path=="/api/contact":
                     name,message=field("name"),field("message")
                     if not (1<=len(name)<=120 and 10<=len(message)<=4000):
                         return self.respond(400,{"error":"Enter a name and message of at least 10 characters."})
                     c.execute("INSERT INTO contacts(name,email,message) VALUES(?,?,?)",(name,email,message))
-                    return self.respond(201,{"message":"Message saved. Thank you for getting in touch!"})
-                c.execute("INSERT OR IGNORE INTO subscribers(email) VALUES(?)",(email,))
-                return self.respond(201,{"message":"You're on the list. Newsletter emails are not yet configured."})
+                else:
+                    c.execute("INSERT OR IGNORE INTO subscribers(email) VALUES(?)",(email,))
+            if path == "/api/contact":
+                try:
+                    notify_contact(name,email,message)
+                except Exception as err:
+                    # The message is already saved; do not leak transport details.
+                    self.log_error("Contact notification failed (%s)", type(err).__name__)
+                return self.respond(201,{"message":"Message saved. Thank you for getting in touch!"})
+            return self.respond(201,{"message":"You're on the list. Newsletter emails are not yet configured."})
         except (ValueError,KeyError,sqlite3.Error,TypeError):
             return self.respond(400,{"error":"Could not process submission."})
 if __name__=="__main__":
-    with connection():pass
+    with closing(connection()):pass
     print("Serving at http://%s:%s"%(HOST,PORT),flush=True)
     ThreadingHTTPServer((HOST,PORT),Handler).serve_forever()

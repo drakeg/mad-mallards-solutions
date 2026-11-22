@@ -14,7 +14,8 @@
 - [x] Add repeatable browser and accessibility checks to CI
 - [x] Add local operator CLI for viewing, exporting and unsubscribing leads
 - [ ] Set up custom domain, TLS and chosen hosting
-- [ ] Add outbound contact notifications and a consent-based newsletter provider
+- [x] Add optional encrypted SMTP contact notification support with no provider enabled by default
+- [ ] Configure and validate an authorized mailbox; add consent-based newsletter provider
 - [ ] Confirm company contact/legal details and review privacy/retention practices
 - [ ] Add SEO schema, sitemap, canonical and search indexing checks
 - [ ] Add privacy-safe visitor analytics after consent policy review

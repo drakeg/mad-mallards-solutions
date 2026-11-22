@@ -90,3 +90,18 @@ docker compose exec -T web python scripts/manage_leads.py unsubscribe person@exa
 ```
 
 To delete specific records use `delete-contact <numeric-id> --confirm` or `delete-subscriber <numeric-id> --confirm`. Back up data before deletion. The system does not send email and does not mark a pending subscription as confirmed.
+
+## Optional contact email notifications
+
+Local inquiry storage works without an email provider. To enable SMTP notifications,
+set `MMS_SMTP_HOST`, `MMS_SMTP_FROM`, and `MMS_CONTACT_TO` in your ignored
+`.env` file, then restart Docker Compose. Set `MMS_SMTP_USERNAME` and
+`MMS_SMTP_PASSWORD` if the provider requires authentication.
+The default is encrypted STARTTLS on port 587; set `MMS_SMTP_SSL=true`
+and port 465 for implicit TLS. There is **no plaintext SMTP fallback**.
+
+Notifications are sent only when all required settings are present. Contact records
+are committed to SQLite before attempting email; if SMTP fails, the inquiry is
+still saved and only a generic notification failure is logged. Credentials and
+recipient data should be reviewed before enabling this on a production site.
+Newsletter sending remains disabled, pending an explicit opt-in workflow.
